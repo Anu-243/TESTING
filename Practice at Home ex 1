@@ -1,0 +1,75 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+public class HospitalManagementTest {
+    private WebDriver driver;
+
+    @BeforeClass
+    public void setUp() {
+        // Set up WebDriver and open the website
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+        driver.get("https://hospital.neohire.io/");
+    }
+
+    @Test
+    public void testAdminLogin() {
+        // Enter admin credentials
+        WebElement usernameInput = driver.findElement(By.id("username"));
+        usernameInput.sendKeys("admin");
+
+        WebElement passwordInput = driver.findElement(By.id("password"));
+        passwordInput.sendKeys("Test@12345");
+
+        // Click on login button
+        WebElement loginButton = driver.findElement(By.id("login-button"));
+        loginButton.click();
+
+        // Verify if admin is logged in successfully
+        WebElement dashboard = driver.findElement(By.id("dashboard"));
+        Assert.assertTrue(dashboard.isDisplayed());
+    }
+
+    @Test(dependsOnMethods = "testAdminLogin")
+    public void testAddNewDoctor() {
+        // Navigate to the doctor management page
+        WebElement doctorManagementLink = driver.findElement(By.linkText("Doctor Management"));
+        doctorManagementLink.click();
+
+        // Click on "Add New Doctor" button
+        WebElement addNewDoctorButton = driver.findElement(By.id("add-doctor-button"));
+        addNewDoctorButton.click();
+
+        // Enter doctor details
+        WebElement doctorNameInput = driver.findElement(By.id("doctor-name"));
+        doctorNameInput.sendKeys("John Doe");
+
+        // Fill in other doctor details
+
+        // Submit the form
+        WebElement submitButton = driver.findElement(By.id("submit-button"));
+        submitButton.click();
+
+        // Verify if the doctor is added successfully
+        WebElement successMessage = driver.findElement(By.id("success-message"));
+        Assert.assertTrue(successMessage.isDisplayed());
+    }
+
+    // Implement other test methods for different test scenarios
+
+    @AfterClass
+    public void tearDown() {
+        // Logout from the admin account
+        WebElement logoutButton = driver.findElement(By.id("logout-button"));
+        logoutButton.click();
+
+        // Close the browser
+        driver.quit();
+    }
+}
